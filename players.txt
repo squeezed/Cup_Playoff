@@ -1,0 +1,18 @@
+# Вводим список игроков построчно в следующем виде:
+# Nickname|Group|Place
+Khozhu_po_bolshomu|A|1
+Istur|A|2
+Heruvim|B|1
+Kostroved|B|2
+Alexandr_Kudinov|C|1
+Andrey_Nikolayev|C|2
+Mark_Is|D|1
+Movus_an_magarit|D|2
+Botnar_eee|E|1
+Anatolij_921|E|2
+apostollo|F|1
+sashkeens|F|2
+squeezed23|G|1
+DimPivovar|G|2
+Domna83|H|1
+Atroks|H|2
