@@ -2,11 +2,11 @@
 # 1. Игроки, занявшие 1-е места в своей группе, между собой не играют;
 # 2. Игроки, занявшие 2-е места в своей группе, между собой не играют;
 # 3. Игроки, вышедшие в плэй-офф из одной группы, между собой не играют.
-# Результат жеребьевки выводится на экран и в выходной файл result.txt
+# Результат жеребьевки выводится на экран и в выходной файл ./result/main_playoff.txt
 
 from random import choice, shuffle
 
-with open('players.txt', 'r', encoding='utf8') as conf:
+with open('./config/main_playoff.txt', 'r', encoding='utf8') as conf:
     raw = conf.read().splitlines()
 result = []
 
@@ -32,7 +32,7 @@ for player in first_bucket:
     second_bucket.remove(enemy)
 
 # Выводим пары на экран и пишем в файл
-with open('result.txt', 'w', encoding='utf8') as output:
+with open('./result/main_playoff.txt', 'w', encoding='utf8') as output:
     for idx, pair in enumerate(result):
         output.write('Стол {}:\n{} - {}\n'.format(idx + 1, pair[0][0], pair[1][0]))
         print('Стол {}:\n{} - {}'.format(idx + 1, pair[0][0], pair[1][0]))
