@@ -1,3 +1,5 @@
+#! /usr/bin/python3
+
 # Скрипт формирования 8 групп по 4 человека для группового этапа
 # Группы формируются из нескольких корзин, распределение по корзинам выполняется по рейтингу
 # Результат выводится на экран, а также в файл ./result/groups_8_by_4.txt
@@ -37,3 +39,5 @@ with open('./result/groups_6_by_4.txt', 'w', encoding='utf8') as out:
             print('{}. {} - {}\n'.format(idx + 1, get_name(bucket[idx]), get_rating(bucket[idx])))
         out.write('\n')
         print('\n')
+
+input('Нажмите Enter для выхода...')

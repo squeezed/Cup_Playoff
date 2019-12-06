@@ -1,40 +1,60 @@
-# Скрипт формирования пар для 1/8 финала в соответствии со следующими условиями:
-# 1. Игроки, занявшие 1-е места в своей группе, между собой не играют;
-# 2. Игроки, занявшие 2-е места в своей группе, между собой не играют;
-# 3. Игроки, вышедшие в плэй-офф из одной группы, между собой не играют.
-# Результат жеребьевки выводится на экран и в выходной файл ./result/main_playoff.txt
+#! /usr/bin/python3
+# Формирование пар плей-офф из двух и более корзин
+# Между собой не играют:
+# 1. Игроки, занявшие одно и то же место в группе
+# 2. Игроки, вышедшие в плей-офф из одной группы
 
-from random import choice, shuffle
+from random import sample
+from itertools import chain
 
-with open('./config/main_playoff.txt', 'r', encoding='utf8') as conf:
-    raw = conf.read().splitlines()
-result = []
 
-# Распределяем игроков по 2 корзинам в зависимости от занятого места
-first_bucket, second_bucket = [], []
-for line in raw:
-    if line and not line.startswith('#'):
-        if tuple(line.split('|'))[2] == '1':
-            first_bucket.append(tuple(line.split('|')))
+def check_place(line1, line2):
+    # Функция проверки занятых мест в группе
+    # Если места одинаковые, то не подходит, возвращаем False, иначе - True
+    if line1.split('|')[2] != line2.split('|')[2]:
+        return True
+    else:
+        return False
+
+
+def check_group(line1, line2):
+    # Функция проверки группы выхода в плей-офф
+    # Если группа одинаковая, то не подходит, возвращаем False, иначе - True
+    if line1.split('|')[1] != line2.split('|')[1]:
+        return True
+    else:
+        return False
+
+
+if __name__ == '__main__':
+    with open('./config/main_playoff.txt', 'r', encoding='utf8') as conf:
+        players = [x for x in conf.read().splitlines() if x and not x.startswith('#')]
+    # Цикл формирования пар по заданным условиям
+    # Если последняя пара не попадает под необходимые условия - запускаем цикл жеребьевки повторно
+    # Если попадает - цикл завершится штатно по условию выхода
+    result = []
+    while len(players) != 0:
+        pair = sample(players, k=2)
+        if len(players) > 2:
+            if check_group(pair[0], pair[1]) and check_place(pair[0], pair[1]):
+                result.append(pair)
+                for player in pair:
+                    players.remove(player)
         else:
-            second_bucket.append(tuple(line.split('|')))
+            if check_group(pair[0], pair[1]) and check_place(pair[0], pair[1]):
+                result.append(pair)
+                for player in pair:
+                    players.remove(player)
+            else:
+                result.append(pair)
+                players = list(chain.from_iterable(result))
+                result = []
 
-# Перемешиваем корзины для интриги:)
-shuffle(first_bucket)
-shuffle(second_bucket)
+    # Выводим результаты жеребьевки
+    with open('./result/main_playoff.txt', 'w', encoding='utf8') as out:
+        for idx, table in enumerate(result, start=1):
+            out_line = 'Стол {}:\n{} - {}\n'.format(idx, table[0].split('|')[0], table[1].split('|')[0])
+            print(out_line)
+            out.write(out_line)
 
-# Составляем пары с учетом того, чтобы не было двух игроков из одной группы
-for player in first_bucket:
-    enemy = choice(second_bucket)
-    while player[1] == enemy[1]:
-        enemy = choice(second_bucket)
-    result.append((player, enemy))
-    second_bucket.remove(enemy)
-
-# Выводим пары на экран и пишем в файл
-with open('./result/main_playoff.txt', 'w', encoding='utf8') as output:
-    for idx, pair in enumerate(result):
-        output.write('Стол {}:\n{} - {}\n'.format(idx + 1, pair[0][0], pair[1][0]))
-        print('Стол {}:\n{} - {}'.format(idx + 1, pair[0][0], pair[1][0]))
-
-input('Нажмите Enter для выхода...')
+print('Нажмите Enter для выхода...')

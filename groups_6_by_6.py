@@ -44,4 +44,4 @@ if __name__ == '__main__':
             out.write('\n')
             print('\n')
 
-input('Press Enetr to Exit...')
+input('Нажмите Enter для выхода...')
